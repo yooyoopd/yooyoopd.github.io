@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Touch and Scroll Interactive</title>
+  <title>Design Engineering Workshop Demo by yooyoopd</title>
   <style>
     body {
       background-color: black;
@@ -34,6 +34,7 @@
       transition: opacity 0.5s;
       display: flex;
       justify-content: center;
+      margin-bottom: 20px;
     }
 
     .visible-video {
@@ -54,9 +55,37 @@
     .hidden-head-text {
       opacity: 0;
     }
+
+    /* 추가된 스타일 */
+    .head-img {
+      opacity: 1;
+      transition: opacity 0.5s;
+      position: relative;
+      width: 500px;
+      height: 742px;
+      overflow: hidden;
+    }
+
+    .hidden-head-img {
+      opacity: 0;
+    }
+
+    .head-img img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   </style>
 </head>
 <body>
+  <div class="head-img">
+    <img src="https://i.imgur.com/TLbDf9e.png" alt="The glass Rocket">
+  </div>
+
   <h2 class="head-text">by yooyoopd</h2>
   <h1 class="title">The Glass Rocket</h1>
   <div class="video-container">
@@ -64,10 +93,12 @@
   </div>
 
   <script>
+    const headImg = document.querySelector('.head-img');
     const headText = document.querySelector('.head-text');
     const title = document.querySelector('.title');
     const videoContainer = document.querySelector('.video-container');
     const video = videoContainer.querySelector('video');
+    let headImgVisible = true;
     let headTextVisible = true;
     let titleVisible = false;
     let videoVisible = false;
@@ -78,6 +109,7 @@
 
       if (delta > 0 && headTextVisible) {
         // 스크롤 다운: head text 숨김
+        headImg.classList.add('hidden-head-img');
         headText.classList.add('hidden-head-text');
         headTextVisible = false;
       } else if (delta > 0 && !titleVisible) {
@@ -130,4 +162,3 @@
   </script>
 </body>
 </html>
-
