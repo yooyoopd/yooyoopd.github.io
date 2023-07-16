@@ -1,1 +1,133 @@
-Hello World
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Touch and Scroll Interactive</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: "Times New Roman", sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      touch-action: none; /* 터치 동작을 브라우저 기본 동작으로 사용하지 않음 */
+    }
+
+    .title {
+      font-size: 40px;
+      opacity: 0;
+      transition: opacity 0.5s;
+      margin-bottom: 20px;
+    }
+
+    .visible-title {
+      opacity: 1;
+    }
+
+    .video-container {
+      opacity: 0;
+      transition: opacity 0.5s;
+      display: flex;
+      justify-content: center;
+    }
+
+    .visible-video {
+      opacity: 1;
+    }
+
+    video {
+      width: 80%;
+    }
+
+    .head-text {
+      font-size: 16px;
+      opacity: 1;
+      transition: opacity 0.5s;
+      margin-bottom: 10px;
+    }
+
+    .hidden-head-text {
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <h2 class="head-text">by yooyoopd</h2>
+  <h1 class="title">The Glass Rocket</h1>
+  <div class="video-container">
+    <video src="https://cdn.dribbble.com/userupload/7813198/file/original-d342b7782bcaf6a70c4dc5234a84728d.mp4" autoplay loop></video>
+  </div>
+
+  <script>
+    const headText = document.querySelector('.head-text');
+    const title = document.querySelector('.title');
+    const videoContainer = document.querySelector('.video-container');
+    const video = videoContainer.querySelector('video');
+    let headTextVisible = true;
+    let titleVisible = false;
+    let videoVisible = false;
+    let startY = null;
+
+    function handleScroll(event) {
+      const delta = Math.sign(event.deltaY || event.touches[0].clientY - startY);
+
+      if (delta > 0 && headTextVisible) {
+        // 스크롤 다운: head text 숨김
+        headText.classList.add('hidden-head-text');
+        headTextVisible = false;
+      } else if (delta > 0 && !titleVisible) {
+        // 첫 번째 스크롤 다운: title text 표시
+        title.classList.add('visible-title');
+        titleVisible = true;
+      } else if (delta > 0 && titleVisible && !videoVisible) {
+        // 더 많이 스크롤 다운: video 표시 및 재생
+        videoContainer.classList.add('visible-video');
+        video.play();
+        videoVisible = true;
+      } else if (delta < 0 && videoVisible) {
+        // 스크롤 업: video 숨김
+        videoContainer.classList.remove('visible-video');
+        video.pause();
+        videoVisible = false;
+      } else if (delta < 0 && titleVisible) {
+        // 그 다음 스크롤 업: title text 숨김
+        title.classList.remove('visible-title');
+        titleVisible = false;
+      }
+
+      event.preventDefault();
+    }
+
+    function handleTouchStart(event) {
+      startY = event.touches[0].clientY;
+    }
+
+    function handleTouchMove(event) {
+      const delta = event.touches[0].clientY - startY;
+
+      if (Math.abs(delta) >= 50) {
+        // 터치 이동이 충분히 크면 스크롤 이벤트로 처리
+        handleScroll(event);
+        startY = event.touches[0].clientY; // 터치 이동 시작점 업데이트
+      }
+
+      event.preventDefault();
+    }
+
+    function handleTouchEnd(event) {
+      startY = null;
+    }
+
+    document.addEventListener('wheel', handleScroll);
+    document.addEventListener('touchstart', handleTouchStart);
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd);
+  </script>
+</body>
+</html>
+
